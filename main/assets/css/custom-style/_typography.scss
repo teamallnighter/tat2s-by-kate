@@ -1,0 +1,142 @@
+// --------------------------------
+
+// (START) Global editor code https://codyhouse.co/ds/globals/typography
+
+// --------------------------------
+
+:root {
+  // font family
+  --font-primary: Nanum Gothic;
+  --font-secondary: Carrois Gothic;
+  --font-tertiary: sans-serif;
+
+  // font size
+  --text-base-size: 1em; // body font-size
+  --text-scale-ratio: 1.2; // multiplier used to generate the type scale values 👇
+  
+  // line-height
+  --body-line-height: 1.4;
+  --heading-line-height: 1.2;
+  
+  // capital letters - used in combo with the lhCrop mixin
+  --font-primary-capital-letter: 1;
+  --font-secondary-capital-letter: 1;
+  --font-tertiary-capital-letter: 1;
+
+  // unit - don't modify unless you want to change the typography unit (e.g., from Em to Rem units)
+  --text-unit: 1em; // if not Em units → --text-unit: var(--text-base-size);
+}
+
+:root, * {
+  // type scale
+  --text-xs: calc((var(--text-unit) / var(--text-scale-ratio)) / var(--text-scale-ratio));
+  --text-sm: calc(var(--text-xs) * var(--text-scale-ratio));
+  --text-md: calc(var(--text-sm) * var(--text-scale-ratio) * var(--text-scale-ratio));
+  --text-lg: calc(var(--text-md) * var(--text-scale-ratio));
+  --text-xl: calc(var(--text-lg) * var(--text-scale-ratio));
+  --text-xxl: calc(var(--text-xl) * var(--text-scale-ratio));
+  --text-xxxl: calc(var(--text-xxl) * var(--text-scale-ratio));
+  --text-xxxxl: calc(var(--text-xxxl) * var(--text-scale-ratio));
+}
+
+@supports(--css: variables) {
+  @include breakpoint(md) {
+    :root {
+      --text-base-size: 1.25em;
+      --text-scale-ratio: 1.25;
+    }
+  }
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+}
+
+// font family
+.font-primary { font-family: var(--font-primary); }
+.font-secondary { font-family: var(--font-secondary); }
+.font-tertiary { font-family: var(--font-tertiary); }
+
+// color
+.color-lipstick-red-darker { color: alpha(var(--color-lipstick-red-darker), var(--color-o, 1)); }
+.color-lipstick-red-dark { color: alpha(var(--color-lipstick-red-dark), var(--color-o, 1)); }
+.color-lipstick-red { color: alpha(var(--color-lipstick-red), var(--color-o, 1)); }
+.color-lipstick-red-light { color: alpha(var(--color-lipstick-red-light), var(--color-o, 1)); }
+.color-lipstick-red-lighter { color: alpha(var(--color-lipstick-red-lighter), var(--color-o, 1)); }
+.color-citrine-darker { color: alpha(var(--color-citrine-darker), var(--color-o, 1)); }
+.color-citrine-dark { color: alpha(var(--color-citrine-dark), var(--color-o, 1)); }
+.color-citrine { color: alpha(var(--color-citrine), var(--color-o, 1)); }
+.color-citrine-light { color: alpha(var(--color-citrine-light), var(--color-o, 1)); }
+.color-citrine-lighter { color: alpha(var(--color-citrine-lighter), var(--color-o, 1)); }
+.color-kates-blue-darker { color: alpha(var(--color-kates-blue-darker), var(--color-o, 1)); }
+.color-kates-blue-dark { color: alpha(var(--color-kates-blue-dark), var(--color-o, 1)); }
+.color-kates-blue { color: alpha(var(--color-kates-blue), var(--color-o, 1)); }
+.color-kates-blue-light { color: alpha(var(--color-kates-blue-light), var(--color-o, 1)); }
+.color-kates-blue-lighter { color: alpha(var(--color-kates-blue-lighter), var(--color-o, 1)); }
+.color-soft-blue-darker { color: alpha(var(--color-soft-blue-darker), var(--color-o, 1)); }
+.color-soft-blue-dark { color: alpha(var(--color-soft-blue-dark), var(--color-o, 1)); }
+.color-soft-blue { color: alpha(var(--color-soft-blue), var(--color-o, 1)); }
+.color-soft-blue-light { color: alpha(var(--color-soft-blue-light), var(--color-o, 1)); }
+.color-soft-blue-lighter { color: alpha(var(--color-soft-blue-lighter), var(--color-o, 1)); }
+
+// gradient
+.color-gradient-primary-top { background-image: linear-gradient(0deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.color-gradient-primary-right { background-image: linear-gradient(90deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.color-gradient-primary-bottom { background-image: linear-gradient(180deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.color-gradient-primary-left { background-image: linear-gradient(270deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.color-gradient-secondary-top { background-image: linear-gradient(0deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.color-gradient-secondary-right { background-image: linear-gradient(90deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.color-gradient-secondary-bottom { background-image: linear-gradient(180deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.color-gradient-secondary-left { background-image: linear-gradient(270deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.color-gradient-tertiary-top { background-image: linear-gradient(0deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.color-gradient-tertiary-right { background-image: linear-gradient(90deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.color-gradient-tertiary-bottom { background-image: linear-gradient(180deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.color-gradient-tertiary-left { background-image: linear-gradient(270deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.color-gradient-quaternary-top { background-image: linear-gradient(0deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.color-gradient-quaternary-right { background-image: linear-gradient(90deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.color-gradient-quaternary-bottom { background-image: linear-gradient(180deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.color-gradient-quaternary-left { background-image: linear-gradient(270deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+
+// --------------------------------
+
+// (END) Global editor code
+
+// --------------------------------
+
+// link style
+a, .link {}
+
+mark {
+  background-color: alpha(var(--color-accent), 0.2);
+  color: inherit;
+}
+
+.text-component {
+  --line-height-multiplier: 1;
+  --text-vspace-multiplier: 1;
+
+  blockquote {
+    padding-left: 1em;
+    border-left: 4px solid var(--color-contrast-low);
+  }
+
+  hr {
+    background: var(--color-contrast-low);
+    height: 1px;
+  }
+
+  figcaption {
+    font-size: var(--text-sm);
+    color: var(--color-contrast-medium);
+  }
+}
+
+.article { // e.g., blog posts
+  --body-line-height: 1.58; // set body line-height
+  --text-vspace-multiplier: 1.2; // increase vertical spacing
+}

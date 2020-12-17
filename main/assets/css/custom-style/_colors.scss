@@ -1,0 +1,156 @@
+// --------------------------------
+
+// (START) Global editor code https://codyhouse.co/ds/globals/colors
+
+// --------------------------------
+
+:root, [data-theme="default"] {
+  // main
+  @include defineColorHSL(--color-primary-darker, 201, 73%, 28%);
+  @include defineColorHSL(--color-primary-dark, 201, 73%, 38%);
+  @include defineColorHSL(--color-primary, 201, 73%, 48%);
+  @include defineColorHSL(--color-primary-light, 201, 73%, 58%);
+  @include defineColorHSL(--color-primary-lighter, 201, 73%, 68%);
+
+  @include defineColorHSL(--color-accent-darker, 349, 75%, 36%);
+  @include defineColorHSL(--color-accent-dark, 349, 75%, 44%);
+  @include defineColorHSL(--color-accent, 349, 75%, 51%);
+  @include defineColorHSL(--color-accent-light, 349, 75%, 59%);
+  @include defineColorHSL(--color-accent-lighter, 349, 75%, 67%);
+
+  @include defineColorHSL(--color-lipstick-red-darker, 345, 73%, 28%);
+  @include defineColorHSL(--color-lipstick-red-dark, 345, 73%, 38%);
+  @include defineColorHSL(--color-lipstick-red, 345, 73%, 48%);
+  @include defineColorHSL(--color-lipstick-red-light, 345, 73%, 58%);
+  @include defineColorHSL(--color-lipstick-red-lighter, 345, 73%, 68%);
+
+  @include defineColorHSL(--color-citrine-darker, 57, 73%, 28%);
+  @include defineColorHSL(--color-citrine-dark, 57, 73%, 38%);
+  @include defineColorHSL(--color-citrine, 57, 73%, 48%);
+  @include defineColorHSL(--color-citrine-light, 57, 73%, 58%);
+  @include defineColorHSL(--color-citrine-lighter, 57, 73%, 68%);
+
+  @include defineColorHSL(--color-kates-blue-darker, 201, 73%, 28%);
+  @include defineColorHSL(--color-kates-blue-dark, 201, 73%, 38%);
+  @include defineColorHSL(--color-kates-blue, 201, 73%, 48%);
+  @include defineColorHSL(--color-kates-blue-light, 201, 73%, 58%);
+  @include defineColorHSL(--color-kates-blue-lighter, 201, 73%, 68%);
+
+  @include defineColorHSL(--color-soft-blue-darker, 201, 68%, 47%);
+  @include defineColorHSL(--color-soft-blue-dark, 201, 68%, 57%);
+  @include defineColorHSL(--color-soft-blue, 201, 68%, 67%);
+  @include defineColorHSL(--color-soft-blue-light, 201, 68%, 77%);
+  @include defineColorHSL(--color-soft-blue-lighter, 201, 68%, 87%);
+
+  @include defineColorHSL(--color-black, 0, 0%, 11%);
+  @include defineColorHSL(--color-white, 0, 0%, 100%);
+
+  // feedback
+  @include defineColorHSL(--color-warning-darker, 46, 100%, 47%);
+  @include defineColorHSL(--color-warning-dark, 46, 100%, 50%);
+  @include defineColorHSL(--color-warning, 46, 100%, 61%);
+  @include defineColorHSL(--color-warning-light, 46, 100%, 71%);
+  @include defineColorHSL(--color-warning-lighter, 46, 100%, 80%);
+
+  @include defineColorHSL(--color-success-darker, 94, 48%, 42%);
+  @include defineColorHSL(--color-success-dark, 94, 48%, 48%);
+  @include defineColorHSL(--color-success, 94, 48%, 56%);
+  @include defineColorHSL(--color-success-light, 94, 48%, 65%);
+  @include defineColorHSL(--color-success-lighter, 94, 48%, 74%);
+
+  @include defineColorHSL(--color-error-darker, 349, 75%, 36%);
+  @include defineColorHSL(--color-error-dark, 349, 75%, 44%);
+  @include defineColorHSL(--color-error, 349, 75%, 51%);
+  @include defineColorHSL(--color-error-light, 349, 75%, 59%);
+  @include defineColorHSL(--color-error-lighter, 349, 75%, 67%);
+
+  // color contrasts
+  @include defineColorHSL(--color-bg, 0, 0%, 100%);
+  @include defineColorHSL(--color-contrast-lower, 0, 0%, 95%);
+  @include defineColorHSL(--color-contrast-low, 0, 0%, 83%);
+  @include defineColorHSL(--color-contrast-medium, 0, 0%, 47%);
+  @include defineColorHSL(--color-contrast-high, 0, 0%, 19%);
+  @include defineColorHSL(--color-contrast-higher, 0, 0%, 11%);
+
+  // gradients
+  @include defineColorHSL(--gradient-primary-stop-1, 201, 73%, 48%);
+  @include defineColorHSL(--gradient-primary-stop-2, 349, 75%, 51%);
+  @include defineColorHSL(--gradient-secondary-stop-1, 201, 73%, 48%);
+  @include defineColorHSL(--gradient-secondary-stop-2, 57, 73%, 48%);
+  @include defineColorHSL(--gradient-tertiary-stop-1, 201, 73%, 48%);
+  @include defineColorHSL(--gradient-tertiary-stop-2, 201, 68%, 67%);
+  @include defineColorHSL(--gradient-quaternary-stop-1, 345, 73%, 48%);
+  @include defineColorHSL(--gradient-quaternary-stop-2, 57, 73%, 48%);
+}
+
+// background color
+.bg-lipstick-red-darker { background-color: alpha(var(--color-lipstick-red-darker), var(--bg-o, 1)); }
+.bg-lipstick-red-dark { background-color: alpha(var(--color-lipstick-red-dark), var(--bg-o, 1)); }
+.bg-lipstick-red { background-color: alpha(var(--color-lipstick-red), var(--bg-o, 1)); }
+.bg-lipstick-red-light { background-color: alpha(var(--color-lipstick-red-light), var(--bg-o, 1)); }
+.bg-lipstick-red-lighter { background-color: alpha(var(--color-lipstick-red-lighter), var(--bg-o, 1)); }
+.bg-citrine-darker { background-color: alpha(var(--color-citrine-darker), var(--bg-o, 1)); }
+.bg-citrine-dark { background-color: alpha(var(--color-citrine-dark), var(--bg-o, 1)); }
+.bg-citrine { background-color: alpha(var(--color-citrine), var(--bg-o, 1)); }
+.bg-citrine-light { background-color: alpha(var(--color-citrine-light), var(--bg-o, 1)); }
+.bg-citrine-lighter { background-color: alpha(var(--color-citrine-lighter), var(--bg-o, 1)); }
+.bg-kates-blue-darker { background-color: alpha(var(--color-kates-blue-darker), var(--bg-o, 1)); }
+.bg-kates-blue-dark { background-color: alpha(var(--color-kates-blue-dark), var(--bg-o, 1)); }
+.bg-kates-blue { background-color: alpha(var(--color-kates-blue), var(--bg-o, 1)); }
+.bg-kates-blue-light { background-color: alpha(var(--color-kates-blue-light), var(--bg-o, 1)); }
+.bg-kates-blue-lighter { background-color: alpha(var(--color-kates-blue-lighter), var(--bg-o, 1)); }
+.bg-soft-blue-darker { background-color: alpha(var(--color-soft-blue-darker), var(--bg-o, 1)); }
+.bg-soft-blue-dark { background-color: alpha(var(--color-soft-blue-dark), var(--bg-o, 1)); }
+.bg-soft-blue { background-color: alpha(var(--color-soft-blue), var(--bg-o, 1)); }
+.bg-soft-blue-light { background-color: alpha(var(--color-soft-blue-light), var(--bg-o, 1)); }
+.bg-soft-blue-lighter { background-color: alpha(var(--color-soft-blue-lighter), var(--bg-o, 1)); }
+
+// background gradient
+.bg-gradient-primary { background-image: radial-gradient(var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.bg-gradient-primary-top { background-image: linear-gradient(0deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.bg-gradient-primary-right { background-image: linear-gradient(90deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.bg-gradient-primary-bottom { background-image: linear-gradient(180deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.bg-gradient-primary-left { background-image: linear-gradient(270deg, var(--gradient-primary-stop-1), var(--gradient-primary-stop-2)); }
+.bg-gradient-secondary { background-image: radial-gradient(var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.bg-gradient-secondary-top { background-image: linear-gradient(0deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.bg-gradient-secondary-right { background-image: linear-gradient(90deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.bg-gradient-secondary-bottom { background-image: linear-gradient(180deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.bg-gradient-secondary-left { background-image: linear-gradient(270deg, var(--gradient-secondary-stop-1), var(--gradient-secondary-stop-2)); }
+.bg-gradient-tertiary { background-image: radial-gradient(var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.bg-gradient-tertiary-top { background-image: linear-gradient(0deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.bg-gradient-tertiary-right { background-image: linear-gradient(90deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.bg-gradient-tertiary-bottom { background-image: linear-gradient(180deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.bg-gradient-tertiary-left { background-image: linear-gradient(270deg, var(--gradient-tertiary-stop-1), var(--gradient-tertiary-stop-2)); }
+.bg-gradient-quaternary { background-image: radial-gradient(var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.bg-gradient-quaternary-top { background-image: linear-gradient(0deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.bg-gradient-quaternary-right { background-image: linear-gradient(90deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.bg-gradient-quaternary-bottom { background-image: linear-gradient(180deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+.bg-gradient-quaternary-left { background-image: linear-gradient(270deg, var(--gradient-quaternary-stop-1), var(--gradient-quaternary-stop-2)); }
+
+// border color
+.border-lipstick-red-darker { border-color: alpha(var(--color-lipstick-red-darker), var(--bg-o, 1)); }
+.border-lipstick-red-dark { border-color: alpha(var(--color-lipstick-red-dark), var(--bg-o, 1)); }
+.border-lipstick-red { border-color: alpha(var(--color-lipstick-red), var(--bg-o, 1)); }
+.border-lipstick-red-light { border-color: alpha(var(--color-lipstick-red-light), var(--bg-o, 1)); }
+.border-lipstick-red-lighter { border-color: alpha(var(--color-lipstick-red-lighter), var(--bg-o, 1)); }
+.border-citrine-darker { border-color: alpha(var(--color-citrine-darker), var(--bg-o, 1)); }
+.border-citrine-dark { border-color: alpha(var(--color-citrine-dark), var(--bg-o, 1)); }
+.border-citrine { border-color: alpha(var(--color-citrine), var(--bg-o, 1)); }
+.border-citrine-light { border-color: alpha(var(--color-citrine-light), var(--bg-o, 1)); }
+.border-citrine-lighter { border-color: alpha(var(--color-citrine-lighter), var(--bg-o, 1)); }
+.border-kates-blue-darker { border-color: alpha(var(--color-kates-blue-darker), var(--bg-o, 1)); }
+.border-kates-blue-dark { border-color: alpha(var(--color-kates-blue-dark), var(--bg-o, 1)); }
+.border-kates-blue { border-color: alpha(var(--color-kates-blue), var(--bg-o, 1)); }
+.border-kates-blue-light { border-color: alpha(var(--color-kates-blue-light), var(--bg-o, 1)); }
+.border-kates-blue-lighter { border-color: alpha(var(--color-kates-blue-lighter), var(--bg-o, 1)); }
+.border-soft-blue-darker { border-color: alpha(var(--color-soft-blue-darker), var(--bg-o, 1)); }
+.border-soft-blue-dark { border-color: alpha(var(--color-soft-blue-dark), var(--bg-o, 1)); }
+.border-soft-blue { border-color: alpha(var(--color-soft-blue), var(--bg-o, 1)); }
+.border-soft-blue-light { border-color: alpha(var(--color-soft-blue-light), var(--bg-o, 1)); }
+.border-soft-blue-lighter { border-color: alpha(var(--color-soft-blue-lighter), var(--bg-o, 1)); }
+
+// --------------------------------
+
+// (END) Global editor code
+
+// --------------------------------
