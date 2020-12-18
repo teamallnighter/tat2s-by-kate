@@ -1,0 +1,40 @@
+#hero-inner{
+    background-color: #ffffff67;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 2px 4px 6px grey;
+}
+
+.intro-wrapper{
+    margin-top: 10vh;
+    padding: 5vh 15vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+}
+
+.intro-image{
+    box-shadow: 2px 4px 8px grey;
+}
+
+.intro-wording{
+    padding:0vh 10vw;
+}
+
+.testimonials{
+    margin-top: 10vh;
+
+}
+
+li{
+    list-style: none;
+}
+
+#cta1{
+    margin: 5vh 10vw;
+    background-color:var(--color-primary);
+    color: #1b1b1b;
+    box-shadow: 2px 4px 8px grey;
+    
+}

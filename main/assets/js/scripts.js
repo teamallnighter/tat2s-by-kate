@@ -884,121 +884,50 @@ function resetFocusTabsStyle() {
 		}
 	};
 }());
-// File#: _1_countdown
+// File#: _1_confetti-button
 // Usage: codyhouse.co/license
 (function() {
-  var CountDown = function(element) {
+  var ConfettiBtn = function(element) {
     this.element = element;
-    this.labels = this.element.getAttribute('data-labels') ? this.element.getAttribute('data-labels').split(',') : [];
-    this.intervalId;
-    // set visible labels
-    this.setVisibleLabels();
-    //create countdown HTML
-    this.createCountDown();
-    //store time elements
-    this.days = this.element.getElementsByClassName('js-countdown__value--0')[0];
-    this.hours = this.element.getElementsByClassName('js-countdown__value--1')[0];
-    this.mins = this.element.getElementsByClassName('js-countdown__value--2')[0];
-    this.secs = this.element.getElementsByClassName('js-countdown__value--3')[0];
-    this.endTime = this.getEndTime();
-    //init counter
-    this.initCountDown();
-  };
+    this.btn = this.element.getElementsByClassName('js-confetti-btn__btn');
+    this.icon = this.element.getElementsByClassName('js-confetti-btn__icon');
+    this.animating = false;
+    this.animationClass = 'confetti-btn--animate';
+    this.positionVariables = '--conf-btn-click-';
+    initConfettiBtn(this);
+	};
 
-  CountDown.prototype.setVisibleLabels = function() {
-    this.visibleLabels = this.element.getAttribute('data-visible-labels') ? this.element.getAttribute('data-visible-labels').split(',') : [];
-    this.visibleLabels = this.visibleLabels.map(function(label){
-      return label.trim();
+  function initConfettiBtn(element) {
+    if(element.btn.length < 1 || element.icon.length < 1) return;
+    element.btn[0].addEventListener('click', function(event){
+      if(element.animating) return;
+      element.animating = true;
+      setAnimationPosition(element, event);
+      Util.addClass(element.element, element.animationClass);
+      resetAnimation(element);
     });
   };
 
-  CountDown.prototype.createCountDown = function() {
-    var wrapper = document.createElement("div");
-    Util.setAttributes(wrapper, {'aria-hidden': 'true', 'class': 'countdown__timer'});
-
-    for(var i = 0; i < 4; i++) {
-      var timeItem = document.createElement("span"),
-        timeValue = document.createElement("span"),
-        timeLabel = document.createElement('span');
-      
-      timeItem.setAttribute('class', 'countdown__item');
-      timeValue.setAttribute('class', 'countdown__value countdown__value--'+i+' js-countdown__value--'+i);
-      timeItem.appendChild(timeValue);
-
-      if( this.labels && this.labels.length > 0 ) {
-        timeLabel.textContent = this.labels[i].trim();
-        timeLabel.setAttribute('class', 'countdown__label');
-        timeItem.appendChild(timeLabel);
-      }
-      
-      wrapper.appendChild(timeItem);
-    }
-    // append new content to countdown element
-    this.element.insertBefore(wrapper, this.element.firstChild);
-    // this.element.appendChild(wrapper);
-  };
-
-  CountDown.prototype.getEndTime = function() {
-    // get number of remaining seconds 
-    if(this.element.getAttribute('data-timer')) return Number(this.element.getAttribute('data-timer'))*1000 + new Date().getTime();
-    else if(this.element.getAttribute('data-countdown')) return Number(new Date(this.element.getAttribute('data-countdown')).getTime());
-  };
-
-  CountDown.prototype.initCountDown = function() {
-    var self = this;
-    this.intervalId = setInterval(function(){
-      self.updateCountDown(false);
-    }, 1000);
-    this.updateCountDown(true);
-  };
-  
-  CountDown.prototype.updateCountDown = function(bool) {
-    // original countdown function
-    // https://gist.github.com/adriennetacke/f5a25c304f1b7b4a6fa42db70415bad2
-    var time = parseInt( (this.endTime - new Date().getTime())/1000 ),
-      days = 0,
-      hours = 0,
-      mins = 0,
-      seconds = 0;
-
-    if(isNaN(time) || time < 0) {
-      clearInterval(this.intervalId);
-      this.emitEndEvent();
-    } else {
-      days = parseInt(time / 86400);
-      time = (time % 86400);
-      hours = parseInt(time / 3600);
-      time = (time % 3600);
-      mins = parseInt(time / 60);
-      time = (time % 60);
-      seconds = parseInt(time);
-    }
+  function setAnimationPosition(element, event) { // change icon position based on click position
     
-    // hide days/hours/mins if not available 
-    if(bool && days == 0 && this.visibleLabels.indexOf('d') < 0) this.days.parentElement.style.display = "none";
-    if(bool && days == 0 && hours == 0 && this.visibleLabels.indexOf('h') < 0) this.hours.parentElement.style.display = "none";
-    if(bool && days == 0 && hours == 0 && mins == 0 && this.visibleLabels.indexOf('m') < 0) this.mins.parentElement.style.display = "none";
+    var btnBoundingRect = element.btn[0].getBoundingClientRect();
+    document.documentElement.style.setProperty(element.positionVariables+'x', (event.clientX - btnBoundingRect.left)+'px');
+    document.documentElement.style.setProperty(element.positionVariables+'y', (event.clientY - btnBoundingRect.top)+'px');
+  };
+
+  function resetAnimation(element) { // reset the button at the end of the icon animation
     
-    this.days.textContent = days;
-    this.hours.textContent = this.getTimeFormat(hours);
-    this.mins.textContent = this.getTimeFormat(mins);
-    this.secs.textContent = this.getTimeFormat(seconds);
+    element.icon[0].addEventListener('animationend', function cb(){
+      element.icon[0].removeEventListener('animationend', cb);
+      Util.removeClass(element.element, element.animationClass);
+      element.animating = false;
+    });
   };
 
-  CountDown.prototype.getTimeFormat = function(time) {
-    return ('0'+ time).slice(-2);
-  };
-
-  CountDown.prototype.emitEndEvent = function(time) {
-    var event = new CustomEvent('countDownFinished');
-    this.element.dispatchEvent(event);
-  };
-
-  //initialize the CountDown objects
-  var countDown = document.getElementsByClassName('js-countdown');
-  if( countDown.length > 0 ) {
-    for( var i = 0; i < countDown.length; i++) {
-      (function(i){new CountDown(countDown[i]);})(i);
+  var confettiBtn = document.getElementsByClassName('js-confetti-btn');
+  if(confettiBtn.length > 0) {
+    for(var i = 0; i < confettiBtn.length; i++) {
+      (function(i){new ConfettiBtn(confettiBtn[i]);})(i);
     }
   }
 }());
@@ -1357,177 +1286,6 @@ function resetFocusTabsStyle() {
     	return ('placeholder' in input);
 		};
 	}
-}());
-// File#: _1_hiding-nav
-// Usage: codyhouse.co/license
-(function() {
-  var hidingNav = document.getElementsByClassName('js-hide-nav');
-  if(hidingNav.length > 0 && window.requestAnimationFrame) {
-    var mainNav = Array.prototype.filter.call(hidingNav, function(element) {
-      return Util.hasClass(element, 'js-hide-nav--main');
-    }),
-    subNav = Array.prototype.filter.call(hidingNav, function(element) {
-      return Util.hasClass(element, 'js-hide-nav--sub');
-    });
-    
-    var scrolling = false,
-      previousTop = window.scrollY,
-      currentTop = window.scrollY,
-      scrollDelta = 10,
-      scrollOffset = 150, // scrollY needs to be bigger than scrollOffset to hide navigation
-      headerHeight = 0; 
-
-    var navIsFixed = false; // check if main navigation is fixed
-    if(mainNav.length > 0 && Util.hasClass(mainNav[0], 'hide-nav--fixed')) navIsFixed = true;
-
-    // store button that triggers navigation on mobile
-    var triggerMobile = getTriggerMobileMenu();
-    var prevElement = createPrevElement();
-    var mainNavTop = 0;
-    // list of classes the hide-nav has when it is expanded -> do not hide if it has those classes
-    var navOpenClasses = hidingNav[0].getAttribute('data-nav-target-class'),
-      navOpenArrayClasses = [];
-    if(navOpenClasses) navOpenArrayClasses = navOpenClasses.split(' ');
-    getMainNavTop();
-    if(mainNavTop > 0) {
-      scrollOffset = scrollOffset + mainNavTop;
-    }
-    
-    // init navigation and listen to window scroll event
-    getHeaderHeight();
-    initSecondaryNav();
-    initFixedNav();
-    resetHideNav();
-    window.addEventListener('scroll', function(event){
-      if(scrolling) return;
-      scrolling = true;
-      window.requestAnimationFrame(resetHideNav);
-    });
-
-    window.addEventListener('resize', function(event){
-      if(scrolling) return;
-      scrolling = true;
-      window.requestAnimationFrame(function(){
-        if(headerHeight > 0) {
-          getMainNavTop();
-          getHeaderHeight();
-          initSecondaryNav();
-          initFixedNav();
-        }
-        // reset both navigation
-        hideNavScrollUp();
-
-        scrolling = false;
-      });
-    });
-
-    function getHeaderHeight() {
-      headerHeight = mainNav[0].offsetHeight;
-    };
-
-    function initSecondaryNav() { // if there's a secondary nav, set its top equal to the header height
-      if(subNav.length < 1 || mainNav.length < 1) return;
-      subNav[0].style.top = (headerHeight - 1)+'px';
-    };
-
-    function initFixedNav() {
-      if(!navIsFixed || mainNav.length < 1) return;
-      mainNav[0].style.marginBottom = '-'+headerHeight+'px';
-    };
-
-    function resetHideNav() { // check if navs need to be hidden/revealed
-      currentTop = window.scrollY;
-      if(currentTop - previousTop > scrollDelta && currentTop > scrollOffset) {
-        hideNavScrollDown();
-      } else if( previousTop - currentTop > scrollDelta || (previousTop - currentTop > 0 && currentTop < scrollOffset) ) {
-        hideNavScrollUp();
-      } else if( previousTop - currentTop > 0 && subNav.length > 0 && subNav[0].getBoundingClientRect().top > 0) {
-        setTranslate(subNav[0], '0%');
-      }
-      // if primary nav is fixed -> toggle bg class
-      if(navIsFixed) {
-        var scrollTop = window.scrollY || window.pageYOffset;
-        Util.toggleClass(mainNav[0], 'hide-nav--has-bg', (scrollTop > headerHeight + mainNavTop));
-      }
-      previousTop = currentTop;
-      scrolling = false;
-    };
-
-    function hideNavScrollDown() {
-      // if there's a secondary nav -> it has to reach the top before hiding nav
-      if( subNav.length  > 0 && subNav[0].getBoundingClientRect().top > headerHeight) return;
-      // on mobile -> hide navigation only if dropdown is not open
-      if(triggerMobile && triggerMobile.getAttribute('aria-expanded') == "true") return;
-      // check if main nav has one of the following classes
-      if( mainNav.length > 0 && (!navOpenClasses || !checkNavExpanded())) {
-        setTranslate(mainNav[0], '-100%'); 
-        mainNav[0].addEventListener('transitionend', addOffCanvasClass);
-      }
-      if( subNav.length  > 0 ) setTranslate(subNav[0], '-'+headerHeight+'px');
-    };
-
-    function hideNavScrollUp() {
-      if( mainNav.length > 0 ) {setTranslate(mainNav[0], '0%'); Util.removeClass(mainNav[0], 'hide-nav--off-canvas');mainNav[0].removeEventListener('transitionend', addOffCanvasClass);}
-      if( subNav.length  > 0 ) setTranslate(subNav[0], '0%');
-    };
-
-    function addOffCanvasClass() {
-      mainNav[0].removeEventListener('transitionend', addOffCanvasClass);
-      Util.addClass(mainNav[0], 'hide-nav--off-canvas');
-    };
-
-    function setTranslate(element, val) {
-      element.style.transform = 'translateY('+val+')';
-    };
-
-    function getTriggerMobileMenu() {
-      // store trigger that toggle mobile navigation dropdown
-      var triggerMobileClass = hidingNav[0].getAttribute('data-mobile-trigger');
-      if(!triggerMobileClass) return false;
-      if(triggerMobileClass.indexOf('#') == 0) { // get trigger by ID
-        var trigger = document.getElementById(triggerMobileClass.replace('#', ''));
-        if(trigger) return trigger;
-      } else { // get trigger by class name
-        var trigger = hidingNav[0].getElementsByClassName(triggerMobileClass);
-        if(trigger.length > 0) return trigger[0];
-      }
-      
-      return false;
-    };
-
-    function createPrevElement() {
-      // create element to be inserted right before the mainNav to get its top value
-      if( mainNav.length < 1) return false;
-      var newElement = document.createElement("div"); 
-      newElement.setAttribute('aria-hidden', 'true');
-      mainNav[0].parentElement.insertBefore(newElement, mainNav[0]);
-      var prevElement =  mainNav[0].previousElementSibling;
-      prevElement.style.opacity = '0';
-      return prevElement;
-    };
-
-    function getMainNavTop() {
-      if(!prevElement) return;
-      mainNavTop = prevElement.getBoundingClientRect().top + window.scrollY;
-    };
-
-    function checkNavExpanded() {
-      var navIsOpen = false;
-      for(var i = 0; i < navOpenArrayClasses.length; i++){
-        if(Util.hasClass(mainNav[0], navOpenArrayClasses[i].trim())) {
-          navIsOpen = true;
-          break;
-        }
-      }
-      return navIsOpen;
-    };
-    
-  } else {
-    // if window requestAnimationFrame is not supported -> add bg class to fixed header
-    var mainNav = document.getElementsByClassName('js-hide-nav--main');
-    if(mainNav.length < 1) return;
-    if(Util.hasClass(mainNav[0], 'hide-nav--fixed')) Util.addClass(mainNav[0], 'hide-nav--has-bg');
-  }
 }());
 // File#: _1_image-magnifier
 // Usage: codyhouse.co/license
@@ -2530,6 +2288,294 @@ function resetFocusTabsStyle() {
 
   var animationSupported = Util.cssSupports('animation', 'name');
 }());
+// File#: _1_off-canvas-content
+// Usage: codyhouse.co/license
+(function() {
+	var OffCanvas = function(element) {
+		this.element = element;
+		this.wrapper = document.getElementsByClassName('js-off-canvas')[0];
+		this.main = document.getElementsByClassName('off-canvas__main')[0];
+		this.triggers = document.querySelectorAll('[aria-controls="'+this.element.getAttribute('id')+'"]');
+		this.closeBtn = this.element.getElementsByClassName('js-off-canvas__close-btn');
+		this.selectedTrigger = false;
+		this.firstFocusable = null;
+		this.lastFocusable = null;
+		this.animating = false;
+		initOffCanvas(this);
+	};	
+
+	function initOffCanvas(panel) {
+		panel.element.setAttribute('aria-hidden', 'true');
+		for(var i = 0 ; i < panel.triggers.length; i++) { // lister to the click on off-canvas content triggers
+			panel.triggers[i].addEventListener('click', function(event){
+				panel.selectedTrigger = event.currentTarget;
+				event.preventDefault();
+				togglePanel(panel);
+			});
+		}
+	};
+
+	function togglePanel(panel) {
+		var status = (panel.element.getAttribute('aria-hidden') == 'true') ? 'close' : 'open';
+		if(status == 'close') openPanel(panel);
+		else closePanel(panel);
+	};
+
+	function openPanel(panel) {
+		if(panel.animating) return; // already animating
+		emitPanelEvents(panel, 'openPanel', '');
+		panel.animating = true;
+		panel.element.setAttribute('aria-hidden', 'false');
+		Util.addClass(panel.wrapper, 'off-canvas--visible');
+		getFocusableElements(panel);
+		var transitionEl = panel.element;
+		if(panel.closeBtn.length > 0 && !Util.hasClass(panel.closeBtn[0], 'js-off-canvas__a11y-close-btn')) transitionEl = 	panel.closeBtn[0];
+		transitionEl.addEventListener('transitionend', function cb(){
+			// wait for the end of transition to move focus and update the animating property
+			panel.animating = false;
+			Util.moveFocus(panel.element);
+			transitionEl.removeEventListener('transitionend', cb);
+		});
+		if(!transitionSupported) panel.animating = false;
+		initPanelEvents(panel);
+	};
+
+	function closePanel(panel, bool) {
+		if(panel.animating) return;
+		panel.animating = true;
+		panel.element.setAttribute('aria-hidden', 'true');
+		Util.removeClass(panel.wrapper, 'off-canvas--visible');
+		panel.main.addEventListener('transitionend', function cb(){
+			panel.animating = false;
+			if(panel.selectedTrigger) panel.selectedTrigger.focus();
+			setTimeout(function(){panel.selectedTrigger = false;}, 10);
+			panel.main.removeEventListener('transitionend', cb);
+		});
+		if(!transitionSupported) panel.animating = false;
+		cancelPanelEvents(panel);
+		emitPanelEvents(panel, 'closePanel', bool);
+	};
+
+	function initPanelEvents(panel) { //add event listeners
+		panel.element.addEventListener('keydown', handleEvent.bind(panel));
+		panel.element.addEventListener('click', handleEvent.bind(panel));
+	};
+
+	function cancelPanelEvents(panel) { //remove event listeners
+		panel.element.removeEventListener('keydown', handleEvent.bind(panel));
+		panel.element.removeEventListener('click', handleEvent.bind(panel));
+	};
+
+	function handleEvent(event) {
+		switch(event.type) {
+			case 'keydown':
+				initKeyDown(this, event);
+				break;
+			case 'click':
+				initClick(this, event);
+				break;
+		}
+	};
+
+	function initClick(panel, event) { // close panel when clicking on close button
+		if( !event.target.closest('.js-off-canvas__close-btn')) return;
+		event.preventDefault();
+		closePanel(panel, 'close-btn');
+	};
+
+	function initKeyDown(panel, event) {
+		if( event.keyCode && event.keyCode == 27 || event.key && event.key == 'Escape' ) {
+			//close off-canvas panel on esc
+			closePanel(panel, 'key');
+		} else if( event.keyCode && event.keyCode == 9 || event.key && event.key == 'Tab' ) {
+			//trap focus inside panel
+			trapFocus(panel, event);
+		}
+	};
+
+	function trapFocus(panel, event) {
+		if( panel.firstFocusable == document.activeElement && event.shiftKey) {
+			//on Shift+Tab -> focus last focusable element when focus moves out of panel
+			event.preventDefault();
+			panel.lastFocusable.focus();
+		}
+		if( panel.lastFocusable == document.activeElement && !event.shiftKey) {
+			//on Tab -> focus first focusable element when focus moves out of panel
+			event.preventDefault();
+			panel.firstFocusable.focus();
+		}
+	};
+
+	function getFocusableElements(panel) { //get all focusable elements inside the off-canvas content
+		var allFocusable = panel.element.querySelectorAll('[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex]:not([tabindex="-1"]), [contenteditable], audio[controls], video[controls], summary');
+		getFirstVisible(panel, allFocusable);
+		getLastVisible(panel, allFocusable);
+	};
+
+	function getFirstVisible(panel, elements) { //get first visible focusable element inside the off-canvas content
+		for(var i = 0; i < elements.length; i++) {
+			if( elements[i].offsetWidth || elements[i].offsetHeight || elements[i].getClientRects().length ) {
+				panel.firstFocusable = elements[i];
+				return true;
+			}
+		}
+	};
+
+	function getLastVisible(panel, elements) { //get last visible focusable element inside the off-canvas content
+		for(var i = elements.length - 1; i >= 0; i--) {
+			if( elements[i].offsetWidth || elements[i].offsetHeight || elements[i].getClientRects().length ) {
+				panel.lastFocusable = elements[i];
+				return true;
+			}
+		}
+	};
+
+	function emitPanelEvents(panel, eventName, target) { // emit custom event
+		var event = new CustomEvent(eventName, {detail: target});
+		panel.element.dispatchEvent(event);
+	};
+
+	//initialize the OffCanvas objects
+	var offCanvas = document.getElementsByClassName('js-off-canvas__panel'),
+		transitionSupported = Util.cssSupports('transition');
+	if( offCanvas.length > 0 ) {
+		for( var i = 0; i < offCanvas.length; i++) {
+			(function(i){new OffCanvas(offCanvas[i]);})(i);
+		}
+	}
+}());
+// File#: _1_overscroll-section
+// Usage: codyhouse.co/license
+(function() {
+  var OverscrollSection = function(element) {
+    this.element = element;
+    this.stickyContent = this.element.getElementsByClassName('js-overscroll-section__sticky-content');
+    this.scrollContent = this.element.getElementsByClassName('js-overscroll-section__scroll-content');
+    this.scrollingFn = false;
+    this.scrolling = false;
+    this.resetOpacity = false;
+    this.disabledClass = 'overscroll-section--disabled';
+    initOverscrollSection(this);
+  };
+
+  function initOverscrollSection(element) {
+    // set position of sticky element
+    setTop(element);
+    // create a new node - to be inserted before the scroll element
+    createPrevElement(element);
+    // on resize -> reset element top position
+    element.element.addEventListener('update-overscroll-section', function(){
+      setTop(element);
+      setPrevElementTop(element);
+    });
+    // set initial opacity value
+    animateOverscrollSection.bind(element)(); 
+    // change opacity of layer
+    var observer = new IntersectionObserver(overscrollSectionCallback.bind(element));
+    observer.observe(element.prevElement);
+  };
+
+  function createPrevElement(element) {
+    if(element.scrollContent.length == 0) return;
+    var newElement = document.createElement("div"); 
+    newElement.setAttribute('aria-hidden', 'true');
+    element.element.insertBefore(newElement, element.scrollContent[0]);
+    element.prevElement =  element.scrollContent[0].previousElementSibling;
+    element.prevElement.style.opacity = '0';
+    setPrevElementTop(element);
+  };
+
+  function setPrevElementTop(element) {
+    element.prevElementTop = element.prevElement.getBoundingClientRect().top + window.scrollY;
+  };
+
+  function overscrollSectionCallback(entries) {
+    if(entries[0].isIntersecting) {
+      if(this.scrollingFn) return; // listener for scroll event already added
+      overscrollSectionInitEvent(this);
+    } else {
+      if(!this.scrollingFn) return; // listener for scroll event already removed
+      window.removeEventListener('scroll', this.scrollingFn);
+      updateOpacityValue(this, 0);
+      this.scrollingFn = false;
+    }
+  };
+
+  function overscrollSectionInitEvent(element) {
+    element.scrollingFn = overscrollSectionScrolling.bind(element);
+    window.addEventListener('scroll', element.scrollingFn);
+  };
+
+  function overscrollSectionScrolling() {
+    if(this.scrolling) return;
+    this.scrolling = true;
+    window.requestAnimationFrame(animateOverscrollSection.bind(this));
+  };
+
+  function animateOverscrollSection() {
+    if(this.stickyContent.length == 0) return;
+    setPrevElementTop(this);
+    if( parseInt(this.stickyContent[0].style.top) != window.innerHeight - this.stickyContent[0].offsetHeight) {
+      setTop(this);
+    }
+    if(this.prevElementTop - window.scrollY < window.innerHeight*2/3) {
+      var opacity = Math.easeOutQuart(window.innerHeight*2/3 + window.scrollY - this.prevElementTop, 0, 1, window.innerHeight*2/3);
+      if(opacity > 0 ) {
+        this.resetOpacity = false;
+        updateOpacityValue(this, opacity);
+      } else if(!this.resetOpacity) {
+        this.resetOpacity = true;
+        updateOpacityValue(this, 0);
+      } 
+    } else {
+      updateOpacityValue(this, 0);
+    }
+    this.scrolling = false;
+  };
+
+  function updateOpacityValue(element, value) {
+    element.element.style.setProperty('--overscroll-section-opacity', value);
+  };
+
+  function setTop(element) {
+    if(element.stickyContent.length == 0) return;
+    var translateValue = window.innerHeight - element.stickyContent[0].offsetHeight;
+    element.stickyContent[0].style.top = translateValue+'px';
+    // check if effect should be disabled
+    Util.toggleClass(element.element, element.disabledClass, translateValue > 2);
+  };
+
+  //initialize the OverscrollSection objects
+  var overscrollSections = document.getElementsByClassName('js-overscroll-section');
+  var stickySupported = Util.cssSupports('position', 'sticky') || Util.cssSupports('position', '-webkit-sticky'),
+    intObservSupported = ('IntersectionObserver' in window && 'IntersectionObserverEntry' in window && 'intersectionRatio' in window.IntersectionObserverEntry.prototype),
+    reducedMotion = Util.osHasReducedMotion();
+	if( overscrollSections.length > 0 && stickySupported && !reducedMotion && intObservSupported) {
+    var overscrollSectionsArray = [];
+		for( var i = 0; i < overscrollSections.length; i++) {
+      (function(i){overscrollSectionsArray.push(new OverscrollSection(overscrollSections[i]));})(i);
+    }
+    
+    var resizingId = false,
+      customEvent = new CustomEvent('update-overscroll-section');
+
+    window.addEventListener('resize', function() {
+      clearTimeout(resizingId);
+      resizingId = setTimeout(doneResizing, 100);
+    });
+
+    // wait for font to be loaded
+    document.fonts.onloadingdone = function (fontFaceSetEvent) {
+      doneResizing();
+    };
+
+    function doneResizing() {
+      for( var i = 0; i < overscrollSectionsArray.length; i++) {
+        (function(i){overscrollSectionsArray[i].element.dispatchEvent(customEvent)})(i);
+      };
+    };
+	}
+}());
 // File#: _1_parallax-image
 // Usage: codyhouse.co/license
 (function() {
@@ -2877,6 +2923,26 @@ function resetFocusTabsStyle() {
 					popoversArray.forEach(function(element){
 						if(element.popoverIsOpen) element.togglePopover(false, false);
 					});
+				});
+			}
+		}
+	}
+}());
+// File#: _1_pre-header
+// Usage: codyhouse.co/license
+(function() {
+	var preHeader = document.getElementsByClassName('js-pre-header');
+	if(preHeader.length > 0) {
+		for(var i = 0; i < preHeader.length; i++) {
+			(function(i){ addPreHeaderEvent(preHeader[i]);})(i);
+		}
+
+		function addPreHeaderEvent(element) {
+			var close = element.getElementsByClassName('js-pre-header__close-btn')[0];
+			if(close) {
+				close.addEventListener('click', function(event) {
+					event.preventDefault();
+					Util.addClass(element, 'pre-header--is-hidden');
 				});
 			}
 		}
@@ -3794,6 +3860,101 @@ function resetFocusTabsStyle() {
 		}
 	}
 }());
+// File#: _1_social-sharing
+// Usage: codyhouse.co/license
+(function() {
+  function initSocialShare(button) {
+    button.addEventListener('click', function(event){
+      event.preventDefault();
+      var social = button.getAttribute('data-social');
+      var url = getSocialUrl(button, social);
+      (social == 'mail')
+        ? window.location.href = url
+        : window.open(url, social+'-share-dialog', 'width=626,height=436');
+    });
+  };
+
+  function getSocialUrl(button, social) {
+    var params = getSocialParams(social);
+    var newUrl = '';
+    for(var i = 0; i < params.length; i++) {
+      var paramValue = button.getAttribute('data-'+params[i]);
+      if(params[i] == 'hashtags') paramValue = encodeURI(paramValue.replace(/\#| /g, ''));
+      if(paramValue) {
+        (social == 'facebook') 
+          ? newUrl = newUrl + 'u='+encodeURIComponent(paramValue)+'&'
+          : newUrl = newUrl + params[i]+'='+encodeURIComponent(paramValue)+'&';
+      }
+    }
+    if(social == 'linkedin') newUrl = 'mini=true&'+newUrl;
+    return button.getAttribute('href')+'?'+newUrl;
+  };
+
+  function getSocialParams(social) {
+    var params = [];
+    switch (social) {
+      case 'twitter':
+        params = ['text', 'hashtags'];
+        break;
+      case 'facebook':
+      case 'linkedin':
+        params = ['url'];
+        break;
+      case 'pinterest':
+        params = ['url', 'media', 'description'];
+        break;
+      case 'mail':
+        params = ['subject', 'body'];
+        break;
+    }
+    return params;
+  };
+
+  var socialShare = document.getElementsByClassName('js-social-share');
+  if(socialShare.length > 0) {
+    for( var i = 0; i < socialShare.length; i++) {
+      (function(i){initSocialShare(socialShare[i])})(i);
+    }
+  }
+}());
+// File#: _1_sticky-hero
+// Usage: codyhouse.co/license
+(function() {
+	var StickyBackground = function(element) {
+		this.element = element;
+		this.scrollingElement = this.element.getElementsByClassName('sticky-hero__content')[0];
+		this.nextElement = this.element.nextElementSibling;
+		this.scrollingTreshold = 0;
+		this.nextTreshold = 0;
+		initStickyEffect(this);
+	};
+
+	function initStickyEffect(element) {
+		var observer = new IntersectionObserver(stickyCallback.bind(element), { threshold: [0, 0.1, 1] });
+		observer.observe(element.scrollingElement);
+		if(element.nextElement) observer.observe(element.nextElement);
+	};
+
+	function stickyCallback(entries, observer) {
+		var threshold = entries[0].intersectionRatio.toFixed(1);
+		(entries[0].target ==  this.scrollingElement)
+			? this.scrollingTreshold = threshold
+			: this.nextTreshold = threshold;
+
+		Util.toggleClass(this.element, 'sticky-hero--media-is-fixed', (this.nextTreshold > 0 || this.scrollingTreshold > 0));
+	};
+
+
+	var stickyBackground = document.getElementsByClassName('js-sticky-hero'),
+		intersectionObserverSupported = ('IntersectionObserver' in window && 'IntersectionObserverEntry' in window && 'intersectionRatio' in window.IntersectionObserverEntry.prototype);
+	if(stickyBackground.length > 0 && intersectionObserverSupported) { // if IntersectionObserver is not supported, animations won't be triggeres
+		for(var i = 0; i < stickyBackground.length; i++) {
+			(function(i){ // if animations are enabled -> init the StickyBackground object
+        if( Util.hasClass(stickyBackground[i], 'sticky-hero--overlay-layer') || Util.hasClass(stickyBackground[i], 'sticky-hero--scale')) new StickyBackground(stickyBackground[i]);
+      })(i);
+		}
+	}
+}());
 // File#: _1_swipe-content
 (function() {
 	var SwipeContent = function(element) {
@@ -3929,6 +4090,190 @@ function resetFocusTabsStyle() {
 	if( swipe.length > 0 ) {
 		for( var i = 0; i < swipe.length; i++) {
 			(function(i){new SwipeContent(swipe[i]);})(i);
+		}
+	}
+}());
+// File#: _1_tooltip
+// Usage: codyhouse.co/license
+(function() {
+	var Tooltip = function(element) {
+		this.element = element;
+		this.tooltip = false;
+		this.tooltipIntervalId = false;
+		this.tooltipContent = this.element.getAttribute('title');
+		this.tooltipPosition = (this.element.getAttribute('data-tooltip-position')) ? this.element.getAttribute('data-tooltip-position') : 'top';
+		this.tooltipClasses = (this.element.getAttribute('data-tooltip-class')) ? this.element.getAttribute('data-tooltip-class') : false;
+		this.tooltipId = 'js-tooltip-element'; // id of the tooltip element -> trigger will have the same aria-describedby attr
+		// there are cases where you only need the aria-label -> SR do not need to read the tooltip content (e.g., footnotes)
+		this.tooltipDescription = (this.element.getAttribute('data-tooltip-describedby') && this.element.getAttribute('data-tooltip-describedby') == 'false') ? false : true; 
+
+		this.tooltipDelay = 300; // show tooltip after a delay (in ms)
+		this.tooltipDelta = 10; // distance beetwen tooltip and trigger element (in px)
+		this.tooltipTriggerHover = false;
+		// tooltp sticky option
+		this.tooltipSticky = (this.tooltipClasses && this.tooltipClasses.indexOf('tooltip--sticky') > -1);
+		this.tooltipHover = false;
+		if(this.tooltipSticky) {
+			this.tooltipHoverInterval = false;
+		}
+		resetTooltipContent(this);
+		initTooltip(this);
+	};
+
+	function resetTooltipContent(tooltip) {
+		var htmlContent = tooltip.element.getAttribute('data-tooltip-title');
+		if(htmlContent) {
+			tooltip.tooltipContent = htmlContent;
+		}
+	};
+
+	function initTooltip(tooltipObj) {
+		// reset trigger element
+		tooltipObj.element.removeAttribute('title');
+		tooltipObj.element.setAttribute('tabindex', '0');
+		// add event listeners
+		tooltipObj.element.addEventListener('mouseenter', handleEvent.bind(tooltipObj));
+		tooltipObj.element.addEventListener('focus', handleEvent.bind(tooltipObj));
+	};
+
+	function removeTooltipEvents(tooltipObj) {
+		// remove event listeners
+		tooltipObj.element.removeEventListener('mouseleave',  handleEvent.bind(tooltipObj));
+		tooltipObj.element.removeEventListener('blur',  handleEvent.bind(tooltipObj));
+	};
+
+	function handleEvent(event) {
+		// handle events
+		switch(event.type) {
+			case 'mouseenter':
+			case 'focus':
+				showTooltip(this, event);
+				break;
+			case 'mouseleave':
+			case 'blur':
+				checkTooltip(this);
+				break;
+		}
+	};
+
+	function showTooltip(tooltipObj, event) {
+		// tooltip has already been triggered
+		if(tooltipObj.tooltipIntervalId) return;
+		tooltipObj.tooltipTriggerHover = true;
+		// listen to close events
+		tooltipObj.element.addEventListener('mouseleave', handleEvent.bind(tooltipObj));
+		tooltipObj.element.addEventListener('blur', handleEvent.bind(tooltipObj));
+		// show tooltip with a delay
+		tooltipObj.tooltipIntervalId = setTimeout(function(){
+			createTooltip(tooltipObj);
+		}, tooltipObj.tooltipDelay);
+	};
+
+	function createTooltip(tooltipObj) {
+		tooltipObj.tooltip = document.getElementById(tooltipObj.tooltipId);
+		
+		if( !tooltipObj.tooltip ) { // tooltip element does not yet exist
+			tooltipObj.tooltip = document.createElement('div');
+			document.body.appendChild(tooltipObj.tooltip);
+		} 
+		
+		// reset tooltip content/position
+		Util.setAttributes(tooltipObj.tooltip, {'id': tooltipObj.tooltipId, 'class': 'tooltip tooltip--is-hidden js-tooltip', 'role': 'tooltip'});
+		tooltipObj.tooltip.innerHTML = tooltipObj.tooltipContent;
+		if(tooltipObj.tooltipDescription) tooltipObj.element.setAttribute('aria-describedby', tooltipObj.tooltipId);
+		if(tooltipObj.tooltipClasses) Util.addClass(tooltipObj.tooltip, tooltipObj.tooltipClasses);
+		if(tooltipObj.tooltipSticky) Util.addClass(tooltipObj.tooltip, 'tooltip--sticky');
+		placeTooltip(tooltipObj);
+		Util.removeClass(tooltipObj.tooltip, 'tooltip--is-hidden');
+
+		// if tooltip is sticky, listen to mouse events
+		if(!tooltipObj.tooltipSticky) return;
+		tooltipObj.tooltip.addEventListener('mouseenter', function cb(){
+			tooltipObj.tooltipHover = true;
+			if(tooltipObj.tooltipHoverInterval) {
+				clearInterval(tooltipObj.tooltipHoverInterval);
+				tooltipObj.tooltipHoverInterval = false;
+			}
+			tooltipObj.tooltip.removeEventListener('mouseenter', cb);
+			tooltipLeaveEvent(tooltipObj);
+		});
+	};
+
+	function tooltipLeaveEvent(tooltipObj) {
+		tooltipObj.tooltip.addEventListener('mouseleave', function cb(){
+			tooltipObj.tooltipHover = false;
+			tooltipObj.tooltip.removeEventListener('mouseleave', cb);
+			hideTooltip(tooltipObj);
+		});
+	};
+
+	function placeTooltip(tooltipObj) {
+		// set top and left position of the tooltip according to the data-tooltip-position attr of the trigger
+		var dimention = [tooltipObj.tooltip.offsetHeight, tooltipObj.tooltip.offsetWidth],
+			positionTrigger = tooltipObj.element.getBoundingClientRect(),
+			position = [],
+			scrollY = window.scrollY || window.pageYOffset;
+		
+		position['top'] = [ (positionTrigger.top - dimention[0] - tooltipObj.tooltipDelta + scrollY), (positionTrigger.right/2 + positionTrigger.left/2 - dimention[1]/2)];
+		position['bottom'] = [ (positionTrigger.bottom + tooltipObj.tooltipDelta + scrollY), (positionTrigger.right/2 + positionTrigger.left/2 - dimention[1]/2)];
+		position['left'] = [(positionTrigger.top/2 + positionTrigger.bottom/2 - dimention[0]/2 + scrollY), positionTrigger.left - dimention[1] - tooltipObj.tooltipDelta];
+		position['right'] = [(positionTrigger.top/2 + positionTrigger.bottom/2 - dimention[0]/2 + scrollY), positionTrigger.right + tooltipObj.tooltipDelta];
+		
+		var direction = tooltipObj.tooltipPosition;
+		if( direction == 'top' && position['top'][0] < scrollY) direction = 'bottom';
+		else if( direction == 'bottom' && position['bottom'][0] + tooltipObj.tooltipDelta + dimention[0] > scrollY + window.innerHeight) direction = 'top';
+		else if( direction == 'left' && position['left'][1] < 0 )  direction = 'right';
+		else if( direction == 'right' && position['right'][1] + dimention[1] > window.innerWidth ) direction = 'left';
+		
+		if(direction == 'top' || direction == 'bottom') {
+			if(position[direction][1] < 0 ) position[direction][1] = 0;
+			if(position[direction][1] + dimention[1] > window.innerWidth ) position[direction][1] = window.innerWidth - dimention[1];
+		}
+		tooltipObj.tooltip.style.top = position[direction][0]+'px';
+		tooltipObj.tooltip.style.left = position[direction][1]+'px';
+		Util.addClass(tooltipObj.tooltip, 'tooltip--'+direction);
+	};
+
+	function checkTooltip(tooltipObj) {
+		tooltipObj.tooltipTriggerHover = false;
+		if(!tooltipObj.tooltipSticky) hideTooltip(tooltipObj);
+		else {
+			if(tooltipObj.tooltipHover) return;
+			if(tooltipObj.tooltipHoverInterval) return;
+			tooltipObj.tooltipHoverInterval = setTimeout(function(){
+				hideTooltip(tooltipObj); 
+				tooltipObj.tooltipHoverInterval = false;
+			}, 300);
+		}
+	};
+
+	function hideTooltip(tooltipObj) {
+		if(tooltipObj.tooltipHover || tooltipObj.tooltipTriggerHover) return;
+		clearInterval(tooltipObj.tooltipIntervalId);
+		if(tooltipObj.tooltipHoverInterval) {
+			clearInterval(tooltipObj.tooltipHoverInterval);
+			tooltipObj.tooltipHoverInterval = false;
+		}
+		tooltipObj.tooltipIntervalId = false;
+		if(!tooltipObj.tooltip) return;
+		// hide tooltip
+		removeTooltip(tooltipObj);
+		// remove events
+		removeTooltipEvents(tooltipObj);
+	};
+
+	function removeTooltip(tooltipObj) {
+		Util.addClass(tooltipObj.tooltip, 'tooltip--is-hidden');
+		if(tooltipObj.tooltipDescription) tooltipObj.element.removeAttribute('aria-describedby');
+	};
+
+	window.Tooltip = Tooltip;
+
+	//initialize the Tooltip objects
+	var tooltips = document.getElementsByClassName('js-tooltip-trigger');
+	if( tooltips.length > 0 ) {
+		for( var i = 0; i < tooltips.length; i++) {
+			(function(i){new Tooltip(tooltips[i]);})(i);
 		}
 	}
 }());
@@ -4473,6 +4818,307 @@ function resetFocusTabsStyle() {
 	if( modalVideos.length > 0 ) {
 		for( var i = 0; i < modalVideos.length; i++) {
 			(function(i){new ModalVideo(modalVideos[i].closest('.js-modal'));})(i);
+		}
+	}
+}());
+// File#: _2_morphing-image-modal
+// Usage: codyhouse.co/license
+(function() {
+  var MorphImgModal = function(opts) {
+    this.options = Util.extend(MorphImgModal.defaults, opts);
+    this.element = this.options.element;
+    this.modalId = this.element.getAttribute('id');
+    this.triggers = document.querySelectorAll('[aria-controls="'+this.modalId+'"]');
+    this.selectedImg = false;
+    // store morph elements
+    this.morphBg = document.getElementsByClassName('js-morph-img-bg');
+    this.morphImg = document.getElementsByClassName('js-morph-img-clone');
+    // store modal content
+    this.modalContent = this.element.getElementsByClassName('js-morph-img-modal__content');
+    this.modalImg = this.element.getElementsByClassName('js-morph-img-modal__img');
+    this.modalInfo = this.element.getElementsByClassName('js-morph-img-modal__info');
+    // store close btn element
+    this.modalCloseBtn = document.getElementsByClassName('js-morph-img-close-btn');
+    // animation duration
+    this.animationDuration = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--morph-img-modal-transition-duration'))*1000 || 300;
+    // morphing animation should run
+    this.animating = false;
+    this.reset = false;
+    initMorphModal(this);
+  };
+
+  function initMorphModal(element) {
+    if(element.morphImg.length < 1) return;
+    element.morphEl = element.morphImg[0].getElementsByTagName('image');
+    element.morphRect  = element.morphImg[0].getElementsByTagName('rect');
+    initMorphModalMarkup(element);
+    initMorphModalEvents(element);
+  };
+
+  function initMorphModalMarkup(element) {
+    // append the clip path + <image> elements to use to morph the image
+    element.morphImg[0].innerHTML = '<svg><defs><clipPath id="'+element.modalId+'-clip"><rect/></clipPath></defs><image height="100%" width="100%" clip-path="url(#'+element.modalId+'-clip)"></image></svg>';
+  };
+
+  function initMorphModalEvents(element) {
+    // morph modal was open
+    element.element.addEventListener('modalIsOpen', function(event){
+      var target = event.detail.closest('[aria-controls="'+element.modalId+'"]');
+      setModalImg(element, target);
+      setModalContent(element, target);
+      toggleModalCloseBtn(element, true);
+    });
+
+    // morph modal was closed
+    element.element.addEventListener('modalIsClose', function(event){
+      element.reset = false;
+      element.animating = true;
+      Util.addClass(element.modalContent[0], 'opacity-0');
+      animateImg(element, false, function() {
+        if(element.reset) return; // user opened a new modal before the animation was complete - no need to reset the modal
+        element.selectedImg = false;
+        resetMorphModal(element, false);
+        element.animating = false;
+      });
+      toggleModalCloseBtn(element, false);
+    });
+
+    // close modal clicking on close btn
+    if(element.modalCloseBtn.length > 0) {
+      element.modalCloseBtn[0].addEventListener('click', function(event) {
+        element.element.click();
+      });
+    }
+  };
+
+  function setModalImg(element, target) {
+    if(!target) return;
+    element.selectedImg = (target.tagName.toLowerCase() == 'img') ? target : target.querySelector('img');
+    var src = element.selectedImg.getAttribute('data-modal-src') || element.selectedImg.getAttribute('src');
+    // update url modal image + morph
+    if(element.modalImg.length > 0) element.modalImg[0].setAttribute('src', src);
+    Util.setAttributes(element.morphEl[0], {'xlink:href': src, 'href': src});
+    element.reset = false;
+    element.animating = true;  
+    // wait for image to be loaded, then animate
+    loadImage(element, src, function() {
+      animateImg(element, true, function() {
+        if(element.reset) return; // user closed the modal before the animation was complete - no need to reset the modal
+        resetMorphModal(element, true);
+        element.animating = false;
+      });
+    });
+  };
+
+  function loadImage(element, src, cb) {
+    var image = new Image();
+    var loaded = false;
+    image.onload = function () {
+      if(loaded) return;
+      cb();
+    }
+    image.src = src;
+    if(image.complete) {
+      loaded = true;
+      cb();
+    }
+  };
+
+  function setModalContent(element, target) {
+    // load the modal info details - using the searchData custom function the user defines
+    if(element.modalInfo.length < 1) return;
+    element.options.searchData(target, function(data){
+      element.modalInfo[0].innerHTML = data;
+    });
+  };
+
+  function toggleModalCloseBtn(element, bool) {
+    if(element.modalCloseBtn.length > 0) {
+      Util.toggleClass(element.modalCloseBtn[0], 'morph-img-close-btn--is-visible', bool);
+    }
+  };
+
+  function animateImg(element, isOpening, cb) {
+    Util.removeClass(element.morphImg[0], 'is-hidden');
+
+    var galleryImgRect = element.selectedImg.getBoundingClientRect(),
+      modalImgRect = element.modalImg[0].getBoundingClientRect();
+
+    runClipAnimation(element, galleryImgRect, modalImgRect, isOpening, cb);
+  };
+
+  function runClipAnimation(element, startRect, endRect, isOpening, cb) {
+    // retrieve all animation params
+    // main element animation (<div>)
+    var elInitHeight = startRect.height,
+      elIntWidth = startRect.width,
+      elInitTop = startRect.top,
+      elInitLeft = startRect.left;
+    
+    var elScale = Math.max(endRect.height/startRect.height, endRect.width/startRect.width);
+
+    var elTranslateX = endRect.left - startRect.left + (endRect.width - startRect.width*elScale)*0.5,
+      elTranslateY = endRect.top - startRect.top + (endRect.height - startRect.height*elScale)*0.5;
+
+    // clip <rect> animation
+    var rectScaleX = endRect.width/(startRect.width*elScale),
+      rectScaleY = endRect.height/(startRect.height*elScale);
+
+    element.morphImg[0].style = 'height:'+elInitHeight+'px; width:'+elIntWidth+'px; top:'+elInitTop+'px; left:'+elInitLeft+'px;';
+
+    element.morphRect[0].setAttribute('transform', 'scale('+1+','+1+')');
+
+    // init morph bg
+    element.morphBg[0].style.height = startRect.height + 'px';
+    element.morphBg[0].style.width = startRect.width + 'px';
+    element.morphBg[0].style.top = startRect.top + 'px';
+    element.morphBg[0].style.left = startRect.left + 'px';
+
+    Util.removeClass(element.morphBg[0], 'is-hidden');
+    
+    animateRectScale(element, elInitHeight, elIntWidth, elScale, elTranslateX, elTranslateY, rectScaleX, rectScaleY, isOpening, cb);
+  };
+
+  function animateRectScale(element, height, width, elScale, elTranslateX, elTranslateY, rectScaleX, rectScaleY, isOpening, cb) {
+    var isMobile = getComputedStyle(element.element, ':before').getPropertyValue('content').replace(/\'|"/g, '') == 'mobile';
+
+    var currentTime = null,
+      duration =  element.animationDuration;
+
+    var startRect = element.selectedImg.getBoundingClientRect(),
+      endRect = element.modalContent[0].getBoundingClientRect();
+    
+    var scaleX = endRect.width/startRect.width,
+      scaleY = endRect.height/startRect.height;
+  
+    var translateX = endRect.left - startRect.left,
+      translateY = endRect.top - startRect.top;
+
+    var animateScale = function(timestamp){  
+      if (!currentTime) currentTime = timestamp;         
+      var progress = timestamp - currentTime;
+      if(progress > duration) progress = duration;
+      
+      // main element values
+      if(isOpening) {
+        var elScalePr = Math.easeOutQuart(progress, 1, elScale - 1, duration),
+        elTransXPr = Math.easeOutQuart(progress, 0, elTranslateX, duration),
+        elTransYPr = Math.easeOutQuart(progress, 0, elTranslateY, duration);
+      } else {
+        var elScalePr = Math.easeOutQuart(progress, elScale, 1 - elScale, duration),
+        elTransXPr = Math.easeOutQuart(progress, elTranslateX, - elTranslateX, duration),
+        elTransYPr = Math.easeOutQuart(progress, elTranslateY, - elTranslateY, duration);
+      }
+      
+      // rect values
+      if(isOpening) {
+        var rectScaleXPr = Math.easeOutQuart(progress, 1, rectScaleX - 1, duration),
+          rectScaleYPr = Math.easeOutQuart(progress, 1, rectScaleY - 1, duration);
+      } else {
+        var rectScaleXPr = Math.easeOutQuart(progress, rectScaleX,  1 - rectScaleX, duration),
+          rectScaleYPr = Math.easeOutQuart(progress, rectScaleY, 1 - rectScaleY, duration);
+      }
+
+      element.morphImg[0].style.transform = 'translateX('+elTransXPr+'px) translateY('+elTransYPr+'px) scale('+elScalePr+')';
+
+      element.morphRect[0].setAttribute('transform', 'translate('+(width/2)*(1 - rectScaleXPr)+' '+(height/2)*(1 - rectScaleYPr)+') scale('+rectScaleXPr+','+rectScaleYPr+')');
+
+      if(isOpening) {
+        var valScaleX = Math.easeOutQuart(progress, 1, (scaleX - 1), duration),
+          valScaleY = isMobile ? Math.easeOutQuart(progress, 1, (scaleY - 1), duration): rectScaleYPr*elScalePr,
+          valTransX = Math.easeOutQuart(progress, 0, translateX, duration),
+          valTransY = isMobile ? Math.easeOutQuart(progress, 0, translateY, duration) : elTransYPr + (elScalePr*height - rectScaleYPr*elScalePr*height)/2;
+      } else {
+        var valScaleX = Math.easeOutQuart(progress, scaleX, 1 - scaleX, duration),
+          valScaleY = isMobile ? Math.easeOutQuart(progress, scaleY, 1 - scaleY, duration) : rectScaleYPr*elScalePr,
+          valTransX = Math.easeOutQuart(progress, translateX, - translateX, duration),
+          valTransY = isMobile ? Math.easeOutQuart(progress, translateY, - translateY, duration) : elTransYPr + (elScalePr*height - rectScaleYPr*elScalePr*height)/2;
+      }
+
+      // morph bg
+      element.morphBg[0].style.transform = 'translateX('+valTransX+'px) translateY('+valTransY+'px) scale('+valScaleX+','+valScaleY+')';
+
+      if(progress < duration) {
+        window.requestAnimationFrame(animateScale);
+      } else if(cb) {
+        cb();
+      }
+    };
+    
+    window.requestAnimationFrame(animateScale);
+  };
+  
+  function resetMorphModal(element, isOpening) {
+    // reset modal at the end of an opening/closing animation
+    Util.toggleClass(element.modalContent[0], 'opacity-0', !isOpening);
+    Util.toggleClass(element.modalInfo[0], 'opacity-0', !isOpening);
+    Util.addClass(element.morphBg[0], 'is-hidden');
+    Util.addClass(element.morphImg[0], 'is-hidden');
+    if(!isOpening) {
+      element.modalImg[0].removeAttribute('src');
+      element.modalInfo[0].innerHTML = '';
+      element.morphEl[0].removeAttribute('xlink:href');
+      element.morphEl[0].removeAttribute('href');
+      element.morphBg[0].removeAttribute('style');
+      element.morphImg[0].removeAttribute('style');
+    }
+  };
+
+  window.MorphImgModal = MorphImgModal;
+
+  MorphImgModal.defaults = {
+    element : '',
+    searchData: false, // function used to return results
+  };
+}());
+// File#: _2_off-canvas-navigation
+// Usage: codyhouse.co/license
+(function() {
+  var OffCanvasNav = function(element) {
+    this.element = element;
+    this.panel = this.element.getElementsByClassName('js-off-canvas__panel')[0];
+    this.trigger = document.querySelectorAll('[aria-controls="'+this.panel.getAttribute('id')+'"]')[0];
+    this.svgAnim = this.trigger.getElementsByTagName('circle');
+    initOffCanvasNav(this);
+  };
+
+  function initOffCanvasNav(canvas) {
+    if(transitionSupported) {
+      // do not allow click on menu icon while the navigation is animating
+      canvas.trigger.addEventListener('click', function(event){
+        canvas.trigger.style.setProperty('pointer-events', 'none');
+      });
+      canvas.panel.addEventListener('openPanel', function(event){
+        canvas.trigger.style.setProperty('pointer-events', 'none');
+      });
+      canvas.panel.addEventListener('transitionend', function(event){
+        if(event.propertyName == 'visibility') {
+          canvas.trigger.style.setProperty('pointer-events', '');
+        }
+      });
+    }
+
+    if(canvas.svgAnim.length > 0) { // create the circle fill-in effect
+      var circumference = (2*Math.PI*canvas.svgAnim[0].getAttribute('r')).toFixed(2);
+      canvas.svgAnim[0].setAttribute('stroke-dashoffset', circumference);
+      canvas.svgAnim[0].setAttribute('stroke-dasharray', circumference);
+      Util.addClass(canvas.trigger, 'offnav-control--ready-to-animate');
+    }
+    
+    canvas.panel.addEventListener('closePanel', function(event){
+      // if the navigation is closed using keyboard or a11y close btn -> change trigger icon appearance (from arrow to menu icon) 
+      if(event.detail == 'key' || event.detail == 'close-btn') {
+        canvas.trigger.click();
+      }
+    });
+  };
+
+  // init OffCanvasNav objects
+  var offCanvasNav = document.getElementsByClassName('js-off-canvas--nav'),
+    transitionSupported = Util.cssSupports('transition');
+	if( offCanvasNav.length > 0 ) {
+		for( var i = 0; i < offCanvasNav.length; i++) {
+			(function(i){new OffCanvasNav(offCanvasNav[i]);})(i);
 		}
 	}
 }());
