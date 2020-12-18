@@ -1,13 +1,15 @@
 #hero-inner{
-    background-color: #ffffff67;
-    padding: 20px;
+    background-color: #ffffffc0;
+    padding: 10px;
+
     border-radius: 20px;
     box-shadow: 2px 4px 6px grey;
 }
 
 .intro-wrapper{
     margin-top: 10vh;
-    padding: 5vh 15vw;
+    margin-right: 38vw ;
+    padding: 5vh 0vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -24,6 +26,7 @@
 
 .testimonials{
     margin-top: 10vh;
+    margin-bottom:20vh;
 
 }
 
@@ -38,3 +41,16 @@ li{
     box-shadow: 2px 4px 8px grey;
     
 }
+
+.feature-15{
+    height=100vh;
+}
+
+.left-side{
+    margin-left:70vw;
+}
+
+.intro-kate{
+    margin-left:50vw;
+}
+
