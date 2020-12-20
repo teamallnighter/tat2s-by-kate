@@ -46,11 +46,13 @@ li{
     height=100vh;
 }
 
-.left-side{
+.left-text{
     margin-left:70vw;
+ 
 }
 
 .intro-kate{
     margin-left:50vw;
+    box-shadow: 4px 6px 8px grey;
 }
 
