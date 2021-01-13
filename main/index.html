@@ -24,7 +24,7 @@
           <div class="text-component margin-bottom-sm">
             <h1>Tattoos By Kate</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam vero aliquam, natus quae architecto hic quod!</p>
-            <button class="btn-primary">More</button>
+            <button class="btn btn--primary">More</button>
           </div>
         </div>
       </div>
@@ -275,7 +275,44 @@
       </div>
     </section>
   </main>
-
+  <div class="off-canvas off-canvas--full-width off-canvas--navigation js-off-canvas js-off-canvas--nav">
+    <button class="reset anim-menu-btn offnav-control js-anim-menu-btn js-tab-focus" aria-label="Toggle navigation" aria-controls="off-canvas-navigation">
+      <svg class="offnav-control__bg" aria-hidden="true" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" stroke-miterlimit="10" /></svg>
+      <i class="anim-menu-btn__icon anim-menu-btn__icon--arrow-right" aria-hidden="true"></i>
+    </button>
+  
+  
+  
+    <div id="off-canvas-navigation" class="off-canvas__panel js-off-canvas__panel" role="complementary">
+      <div class="off-canvas__content">
+        <div class="container max-width-sm padding-y-lg padding-bottom-0@md">
+          <div class="offnav height-100% flex flex-column text-center text-left@md">
+            <nav class="margin-bottom-lg" role="navigation" aria-label="Main">
+              <ul class="grid gap-sm">
+                <li><i class="offnav__label text-sm@md">Navigation</i></li>
+                <li><a class="offnav__link text-xxl" href="#0">Services</a></li>
+                <li><a class="offnav__link text-xxl" href="gallery.html">Portfolio</a></li>
+                <li><a class="offnav__link text-xxl" href="faq.html">FAQ</a></li>
+                <li><a class="offnav__link text-xxl" href="#0">Blog</a></li>
+                <li><a class="offnav__link text-xxl" href="contact.html">Contact</a></li>
+              </ul>
+            </nav>
+  
+            <nav class="offnav__subnav margin-top-auto@md padding-y-xs@md" role="navigation" aria-label="Secondary">
+              <ul class="flex flex-column gap-sm flex-row@md text-xs@md">
+                <li class="margin-right-auto@md">&copy;Copyright</li>
+                <li><a href="#0" class="color-contrast-higher">Twitter</a></li>
+                <li><a href="#0" class="color-contrast-higher">Facebook</a></li>
+                <li><a href="#0" class="color-contrast-higher">Instagram</a></li>
+              </ul>
+            </nav>
+  
+            <button class="reset offnav__a11y-close-btn js-off-canvas__close-btn js-off-canvas__a11y-close-btn">Close Navigation 👉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 

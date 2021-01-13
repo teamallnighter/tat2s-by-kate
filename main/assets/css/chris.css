@@ -33,8 +33,12 @@ li{
 
 #cta1{
     margin: 5vh 10vw;
-    background-color:var(--color-primary);
+    background-color:var(--color-kates-blue);
     color: #1b1b1b;
     box-shadow: 2px 4px 8px grey;
     
+}
+
+.contact-wrapper{
+    padding: 15vh 20vw;
 }

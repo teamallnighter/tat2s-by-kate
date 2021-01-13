@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "scripts": {
     "gulp": "gulp",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gulp watch",
+    "build": "gulp sass && gulp scripts && ntl build",
+    "deploy": "gulp sass && gulp scripts && ntl deploy --prod",
+    "build-deploy": "gulp sass && gulp scripts && ntl build && deploy"
   },
   "devDependencies": {
     "autoprefixer": "^9.4.3",
